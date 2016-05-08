@@ -47,7 +47,11 @@ function davcnaStopnja(izvajalec, zanr) {
 
 // Prikaz seznama pesmi na strani
 streznik.get('/', function(zahteva, odgovor) {
+<<<<<<< HEAD
   if(!zahteva.session.stranka) {
+=======
+  if (!zahteva.session.stranka){
+>>>>>>> prikaz-racuna-trenutni
     odgovor.redirect('/prijava');
   }
   else {
@@ -71,9 +75,15 @@ streznik.get('/', function(zahteva, odgovor) {
           vrstice[i].stopnja = davcnaStopnja(vrstice[i].izvajalec, vrstice[i].zanr);
         odgovor.render('seznam', {seznamPesmi: vrstice});
       }
+<<<<<<< HEAD
   });
   }
 });
+=======
+  })
+  }
+})
+>>>>>>> prikaz-racuna-trenutni
 
 // Dodajanje oz. brisanje pesmi iz košarice
 streznik.get('/kosarica/:idPesmi', function(zahteva, odgovor) {
@@ -181,19 +191,29 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
 // Izpis računa v HTML predstavitvi ali izvorni XML obliki
 streznik.get('/izpisiRacun/:oblika', function(zahteva, odgovor) {
   pesmiIzKosarice(zahteva, function(pesmi) {
-    if (!pesmi) {
+    vrniStranke(function(napaka, stranke) {
+    if (!pesmi || napaka) {
       odgovor.sendStatus(500);
     } else if (pesmi.length == 0) {
       odgovor.send("<p>V košarici nimate nobene pesmi, \
         zato računa ni mogoče pripraviti!</p>");
     } else {
+      var izbraniNarocnik;
+      for (var i = 0; i < stranke.length; i++) {
+        if (zahteva.session.stranka == stranke[i].CustomerId){
+          izbraniNarocnik = stranke[i];
+          break;
+        } 
+      }
       odgovor.setHeader('content-type', 'text/xml');
       odgovor.render('eslog', {
         vizualiziraj: zahteva.params.oblika == 'html' ? true : false,
-        postavkeRacuna: pesmi
+        postavkeRacuna: pesmi,
+        narocnik: izbraniNarocnik
       })  
     }
   })
+})
 })
 
 // Privzeto izpiši račun v HTML obliki
@@ -268,15 +288,24 @@ streznik.post('/stranka', function(zahteva, odgovor) {
   
   form.parse(zahteva, function (napaka1, polja, datoteke) {
     zahteva.session.stranka = polja.seznamStrank;
+<<<<<<< HEAD
     odgovor.redirect('/');
+=======
+    odgovor.redirect('/')
+>>>>>>> prikaz-racuna-trenutni
   });
 });
 
 // Odjava stranke
 streznik.post('/odjava', function(zahteva, odgovor) {
     zahteva.session.stranka = null;
+<<<<<<< HEAD
     odgovor.redirect('/prijava') ;
 });
+=======
+    odgovor.redirect('/prijava'); 
+})
+>>>>>>> prikaz-racuna-trenutni
 
 
 
